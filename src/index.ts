@@ -1,6 +1,6 @@
 const { decode } = require('msgpack-lite');
 const Observable = require('zen-observable');
-const WebSocket = require('ws');
+const WS = require('ws');
 
 /*
  * Block interfaces
@@ -60,6 +60,12 @@ export interface IBlock {
 	block_meta: IBlockMeta;
 }
 
+export interface IBlockEvent {
+	last_commit: IBlockLastCommit;
+	data: IBlockData;
+	header: IBlockHeader;
+}
+
 /*
  * -------------------
  * Transaction interfaces
@@ -89,6 +95,8 @@ export interface ITx {
 	tx: string;
 	tx_result: ITxResult;
 }
+
+export interface ITxEvent {}
 
 /*
  * Status interfaces
@@ -165,71 +173,67 @@ export class TendermintClient {
 	public events: any;
 	public isSynced: boolean;
 
+	private isNode: boolean;
 	private options: IClientOptions;
 	private connection: any;
 
 	constructor(options: IClientOptions) {
 		this.options = options;
 		this.isSynced = false;
+		this.isNode = typeof window === 'undefined';
 	}
 
 	public connect(): void {
 		this.events = new Observable((observable) => {
+			const messageHandler = (event: any) => {
+				if (this.isNode) {
+					observable.next(event);
+				} else {
+					observable.next(JSON.parse(event.data));
+				}
+			};
+
+			const openHandler = () => {
+				this.isSynced = true;
+				this.subscribeToBlocks();
+				console.log('Connected to node web socket');
+			};
+
+			const closeHandler = (error) => {
+				this.connection = null;
+				this.isSynced = false;
+				console.error('Error in web socket connection:', error);
+			};
+
+			const errorHandler = (error) => {
+				console.error('Socket error:', error);
+				observable.complete();
+			};
+
 			try {
-				this.connection = new WebSocket(`${this.options.node_ws}/websocket`);
+				if (this.isNode) {
+					this.connection = new WS(`${this.options.node_ws}/websocket`);
 
-				this.connection.onopen = () => {
-					this.isSynced = true;
+					this.connection.on('open', () => openHandler());
+					this.connection.on('close', error => closeHandler(error));
+					this.connection.on('error', error => errorHandler(error));
+					this.connection.on('message', event => messageHandler(event));
+				}
+				// for browsers
+				else {
+					this.connection = new WebSocket(`${this.options.node_ws}/websocket`);
 
-					this.subscribeToBlocks();
-					this.switchEvents(observable);
-
-					console.log('Connected to node web socket');
-				};
-
-				this.connection.onclose = (error) => {
-					this.connection = null;
-					this.isSynced = false;
-					console.error('Error in web socket connection:', error);
-				};
-
-				// On error handler
-				this.connection.onerror = () => {
-					console.error('Socket error');
-					observable.complete();
-				};
+					this.connection.onopen = () => openHandler();
+					this.connection.onclose = error => closeHandler(error);
+					this.connection.onerror = error => errorHandler(error);
+					this.connection.onmessage = event => messageHandler(event);
+				}
 
 			} catch (e) {
 				console.error(`Error in web socket connection: ${e}`);
 				observable.complete();
 			}
 		});
-	}
-
-	public switchEvents(observable): void {
-		try {
-			this.connection.onmessage = (event) => {
-				const data = this.parseEvent(event);
-				if (!data || !data.type) { return; }
-
-				// Tx
-				if (data.type === 'tendermint/event/Tx') {
-					const tx = new TxModel(data.value);
-					observable.next({
-						type: 'Tx',
-						data: tx,
-					});
-				} else if (data.type === 'tendermint/event/NewBlock') {
-					const block = new BlockModel(data.value.block);
-					observable.next({
-						type: 'Block',
-						data: block,
-					});
-				}
-			};
-		} catch (e) {
-			console.error(e);
-		}
 	}
 
 	public subscribeToBlocks(): void {
@@ -249,12 +253,6 @@ export class TendermintClient {
 
 	public test() {
 		return 'ok';
-	}
-
-	private parseEvent(event) {
-		event = JSON.parse(event.data);
-		if (!event || !event.result || !event.result.data) { return; }
-		return event.result.data;
 	}
 
 }
