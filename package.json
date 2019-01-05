@@ -1,0 +1,31 @@
+{
+  "name": "tendermint-js-client",
+  "version": "0.0.3",
+  "description": "The simple and minimalistic lib to get blockchain data from Tendermint node",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build",
+    "publish": "npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cryptoji/Tendermint-JS-Client.git"
+  },
+  "author": "cryptoji",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/cryptoji/Tendermint-JS-Client/issues"
+  },
+  "homepage": "https://github.com/cryptoji/Tendermint-JS-Client#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "msgpack-lite": "^0.1.26",
+    "zen-observable": "^0.8.11"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "ts-loader": "^5.3.2",
+    "typescript": "^3.2.2"
+  }
+}
