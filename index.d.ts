@@ -1,8 +1,16 @@
 declare module 'tendermint-js-client' {
 	export class TendermintClient {
-		constructor();
+		public status: any;
+		public events: any;
+		public isSynced: boolean;
 
-		connect(): void;
-		test(): string;
+		constructor(options: {
+			node_rpc: string;
+			node_ws: string;
+			autoSyncToWs?: boolean;
+		});
+
+		public connect(): void;
+		public test(): string;
 	}
 }

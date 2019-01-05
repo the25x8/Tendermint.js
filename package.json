@@ -1,6 +1,6 @@
 {
   "name": "tendermint-js-client",
-  "version": "0.0.4",
+  "version": "0.0.4-2",
   "description": "The simple and minimalistic lib to get blockchain data from Tendermint node",
   "main": "index.js",
   "types": "./index.d.ts",
@@ -25,6 +25,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "msgpack-lite": "^0.1.26",
+    "ws": "^6.1.2",
     "zen-observable": "^0.8.11"
   },
   "devDependencies": {
@@ -37,5 +38,9 @@
     "@types/node": "^10.12.18",
     "babel-core": "^7.0.0-bridge.0",
     "jest": "^23.6.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.1",
+    "utf-8-validate": "^5.0.2"
   }
 }
