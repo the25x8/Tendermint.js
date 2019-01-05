@@ -10,7 +10,7 @@ export interface IBlockID {
 	parts: {
 		hash: string;
 		total: string;
-	}
+	};
 }
 
 export interface IBlockPrecommit {
@@ -22,8 +22,8 @@ export interface IBlockPrecommit {
 	signature: {
 		data: string;
 		type: string;
-	},
-	block_id: IBlockID
+	};
+	block_id: IBlockID;
 }
 
 export interface IBlockLastCommit {
@@ -41,7 +41,7 @@ export interface IBlockHeader {
 	height: string;
 	time: string;
 	num_txs: string;
-	last_block_id: IBlockID,
+	last_block_id: IBlockID;
 	last_commit_hash: string;
 	data_hash: string;
 	validators_hash: string;
@@ -70,7 +70,7 @@ export interface ITxProof {
 	Total: string;
 	Index: string;
 	Proof: {
-		aunts: string[]
+		aunts: string[],
 	};
 }
 
@@ -99,7 +99,7 @@ export interface IStatusValidatorInfo {
 	pub_key: {
 		type: string;
 		value: string;
-	}
+	};
 }
 
 export interface IStatusSyncInfo {
@@ -126,7 +126,7 @@ export interface IStatusNodeInfo {
 		p2p: string;
 		block: string;
 		app: string;
-	}
+	};
 }
 
 export interface IStatus {
@@ -208,25 +208,23 @@ export class TendermintClient {
 
 	public switchEvents(observable): void {
 		try {
-			this.connection.onmessage = event => {
+			this.connection.onmessage = (event) => {
 				const data = this.parseEvent(event);
-				if (!data || !data.type) return;
+				if (!data || !data.type) { return; }
 
 				// Tx
 				if (data.type === 'tendermint/event/Tx') {
 					const tx = new TxModel(data.value);
 					observable.next({
 						type: 'Tx',
-						data: tx
+						data: tx,
 					});
-				}
-				// block
-				else if (data.type === 'tendermint/event/NewBlock') {
+				} else if (data.type === 'tendermint/event/NewBlock') {
 					const block = new BlockModel(data.value.block);
 					observable.next({
 						type: 'Block',
-						data: block
-					})
+						data: block,
+					});
 				}
 			};
 		} catch (e) {
@@ -237,26 +235,26 @@ export class TendermintClient {
 	public subscribeToBlocks(): void {
 		try {
 			this.connection.send(JSON.stringify({
-				id: "explorer-sub-to-blocks",
-				jsonrpc: "2.0",
-				method: "subscribe",
+				id: 'explorer-sub-to-blocks',
+				jsonrpc: '2.0',
+				method: 'subscribe',
 				params: {
-					query: 'tm.event=\'NewBlock\''
-				}
+					query: 'tm.event=\'NewBlock\'',
+				},
 			}));
 		} catch (e) {
 			console.error(e);
 		}
 	}
 
-	private parseEvent(event) {
-		event = JSON.parse(event.data);
-		if (!event || !event.result || !event.result.data) return;
-		return event.result.data;
+	public test() {
+		return 'ok';
 	}
 
-	test() {
-		return 'ok';
+	private parseEvent(event) {
+		event = JSON.parse(event.data);
+		if (!event || !event.result || !event.result.data) { return; }
+		return event.result.data;
 	}
 
 }

@@ -8,6 +8,8 @@
     "build": "babel ./src --out-dir lib --extensions \".ts,.tsx\"",
     "prepublish": "npm run build",
     "publish": "npm publish",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint-fix": "tslint --fix -c tslint.json 'src/**/*.ts'",
     "test": "jest"
   },
   "repository": {

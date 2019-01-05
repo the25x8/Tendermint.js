@@ -4,5 +4,7 @@ package-lock.json
 src
 test
 .babelrc
+.eslintrc
 .gitignore
+tslint.json
 examples
