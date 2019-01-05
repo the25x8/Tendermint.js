@@ -1,14 +1,25 @@
 declare module 'tendermint-js-client' {
+	import {
+		IBlock,
+		IClientOptions,
+		IStatus,
+		ITx
+	} from './src';
+
+	export class BlockModel {
+		constructor(rawModel: IBlock);
+	}
+
+	export class TxModel {
+		constructor(rawTx: ITx);
+	}
+
 	export class TendermintClient {
-		public status: any;
+		public status: IStatus;
 		public events: any;
 		public isSynced: boolean;
 
-		constructor(options: {
-			node_rpc: string;
-			node_ws: string;
-			autoSyncToWs?: boolean;
-		});
+		constructor(options: IClientOptions);
 
 		public connect(): void;
 		public test(): string;
