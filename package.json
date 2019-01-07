@@ -5,7 +5,9 @@
   "main": "index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "build": "babel ./src --out-dir lib --extensions \".ts,.tsx\"",
+    "dev": "./node_modules/.bin/babel --watch ./src --out-file ./lib/index.js --extensions \".ts,.tsx\"",
+    "build": "./node_modules/.bin/babel ./src --out-file ./lib/index.js --extensions \".ts,.tsx\"",
+    "build-prod": "./node_modules/.bin/babel ./src --out-file ./lib/index.js --extensions \".ts,.tsx\" --presets minify",
     "prepublish": "npm run build",
     "publish": "npm publish",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
@@ -37,6 +39,7 @@
     "@babel/preset-typescript": "^7.1.0",
     "@types/node": "^10.12.18",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-preset-minify": "^0.5.0",
     "jest": "^23.6.0"
   },
   "optionalDependencies": {
