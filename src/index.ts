@@ -57,13 +57,7 @@ export interface IBlock {
 	last_commit: IBlockLastCommit;
 	data: IBlockData;
 	header: IBlockHeader;
-	block_meta: IBlockMeta;
-}
-
-export interface IBlockEvent {
-	last_commit: IBlockLastCommit;
-	data: IBlockData;
-	header: IBlockHeader;
+	block_meta?: IBlockMeta;
 }
 
 /*
@@ -95,8 +89,6 @@ export interface ITx {
 	tx: string;
 	tx_result: ITxResult;
 }
-
-export interface ITxEvent {}
 
 /*
  * Status interfaces
@@ -153,29 +145,35 @@ export interface IClientOptions {
  * ----------------------
  * Common models
  */
-export class BlockModel {
-	constructor(rawBlock: IBlock) {
+export class BlockModel implements IBlock {
+	last_commit: IBlockLastCommit;
+	data: IBlockData;
+	header: IBlockHeader;
+	block_meta: IBlockMeta;
 
+	constructor(rawBlock: IBlock) {
+		this.last_commit = rawBlock.last_commit;
+		this.block_meta = rawBlock.block_meta;
+		this.header = rawBlock.header;
+		this.data = rawBlock.data;
 	}
 }
 
 export class TxModel {
-	constructor(rawTx: ITx) {
-
-	}
+	constructor(rawTx: ITx) {}
 }
 
 /*
  * Main class
  */
 export class TendermintClient {
-	public status: IStatus;
-	public events: any;
+	public status: IStatus; // Last sync node status
+	public events: any; // Observer events
 	public isSynced: boolean;
 
-	private isNode: boolean;
+	readonly isNode: boolean; // Select platform
+	private connection: any; // Ws connection
 	private options: IClientOptions;
-	private connection: any;
 
 	constructor(options: IClientOptions) {
 		this.options = options;
@@ -183,13 +181,32 @@ export class TendermintClient {
 		this.isNode = typeof window === 'undefined';
 	}
 
+	/*
+	 * Connect to node via web socket
+	 * subscribe to NewBlocks, NewTxs(optional)
+	 * emit data through observable pattern
+	 */
 	public connect(): void {
 		this.events = new Observable((observable) => {
+			/*
+			 * WebSocket events handlers
+			 */
 			const messageHandler = (event: any) => {
-				if (this.isNode) {
-					observable.next(event);
+				// In browser ws event is json
+				const parsedEvent = this.isNode ? JSON.parse(event) : JSON.parse(event.data);
+				const eventData = parsedEvent.result.data;
+
+				if (eventData) {
+					// Block
+					if (eventData.type === 'tendermint/event/NewBlock') {
+						observable.next(new BlockModel(eventData.value.block));
+					}
+					// Transaction
+					else if (eventData.type === 'tendermint/event/NewTx') {
+						observable.next(new BlockModel(eventData.value));
+					}
 				} else {
-					observable.next(JSON.parse(event.data));
+					observable.next(parsedEvent);
 				}
 			};
 
@@ -210,9 +227,16 @@ export class TendermintClient {
 				observable.complete();
 			};
 
+			/*
+			 * Use different realisations to call
+			 * of WebSockets for browser and node
+			 */
 			try {
+				const wsUrl = `${this.options.node_ws}/websocket`;
+
+				// for nodejs
 				if (this.isNode) {
-					this.connection = new WS(`${this.options.node_ws}/websocket`);
+					this.connection = new WS(wsUrl);
 
 					this.connection.on('open', () => openHandler());
 					this.connection.on('close', error => closeHandler(error));
@@ -221,7 +245,7 @@ export class TendermintClient {
 				}
 				// for browsers
 				else {
-					this.connection = new WebSocket(`${this.options.node_ws}/websocket`);
+					this.connection = new WebSocket(wsUrl);
 
 					this.connection.onopen = () => openHandler();
 					this.connection.onclose = error => closeHandler(error);
@@ -236,6 +260,10 @@ export class TendermintClient {
 		});
 	}
 
+	/*
+	 * Static commands for ws
+	 * of Tendermint node
+	 */
 	public subscribeToBlocks(): void {
 		try {
 			this.connection.send(JSON.stringify({
