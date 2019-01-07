@@ -7,3 +7,4 @@ test
 .gitignore
 tslint.json
 examples
+src
