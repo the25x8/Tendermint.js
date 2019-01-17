@@ -1,8 +1,8 @@
-const { decode } = require('msgpack-lite');
+// const { decode } = require('msgpack-lite');
 const Observable = require('zen-observable');
 const WS = require('ws');
 
-import { TxModel } from './models/tx';
+// import { TxModel } from './models/tx';
 import { BlockModel } from './models/block';
 import { IStatus } from './interfaces/status';
 
@@ -17,8 +17,8 @@ export class TendermintClientWS {
 	private options: IClientOptions;
 	readonly isNode = false;
 
-	public events: any; // Observer events
 	public isSynced: boolean;
+	public $eventsSubscription: any; // Observer events
 
 	constructor(globalProps: object) {
 		this.isSynced = false;
@@ -27,17 +27,22 @@ export class TendermintClientWS {
 	}
 
 	/*
+	 * RPC methods
+	 */
+
+
+	/*
 	 * Connect to node via web socket
 	 * subscribe to NewBlocks, NewTxs(optional)
 	 * emit data through observable pattern
 	 */
 	public connect(): void {
-		this.events = new Observable((observable) => {
+		this.$eventsSubscription = new Observable((observable) => {
 			/*
 			 * WebSocket events handlers
 			 */
 			const messageHandler = (event: any) => {
-				// In browser ws event is json
+				// Differences formats of ws class for node and browser
 				const parsedEvent = this.isNode ? JSON.parse(event) : JSON.parse(event.data);
 				const eventData = parsedEvent.result.data;
 
@@ -57,7 +62,6 @@ export class TendermintClientWS {
 
 			const openHandler = () => {
 				this.isSynced = true;
-				this.subscribeToBlocks();
 				console.log('Connected to node web socket');
 			};
 
@@ -82,7 +86,6 @@ export class TendermintClientWS {
 				// for nodejs
 				if (this.isNode) {
 					this.connection = new WS(wsUrl);
-
 					this.connection.on('open', () => openHandler());
 					this.connection.on('close', error => closeHandler(error));
 					this.connection.on('error', error => errorHandler(error));
@@ -91,7 +94,6 @@ export class TendermintClientWS {
 				// for browsers
 				else {
 					this.connection = new WebSocket(wsUrl);
-
 					this.connection.onopen = () => openHandler();
 					this.connection.onclose = error => closeHandler(error);
 					this.connection.onerror = error => errorHandler(error);
@@ -109,16 +111,18 @@ export class TendermintClientWS {
 	 * Static commands for ws
 	 * of Tendermint node
 	 */
-	public subscribeToBlocks(): void {
+	public subscribe(to: string): void {
 		try {
-			this.connection.send(JSON.stringify({
-				id: 'explorer-sub-to-blocks',
-				jsonrpc: '2.0',
-				method: 'subscribe',
-				params: {
-					query: 'tm.event=\'NewBlock\'',
-				},
-			}));
+			if (to === 'blocks') {
+				this.connection.send(JSON.stringify({
+					id: 'explorer-sub-to-blocks',
+					jsonrpc: '2.0',
+					method: 'subscribe',
+					params: {
+						query: 'tm.event=\'NewBlock\'',
+					},
+				}));
+			}
 		} catch (e) {
 			console.error(e);
 		}
