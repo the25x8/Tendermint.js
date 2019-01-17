@@ -152,12 +152,13 @@ declare namespace TendermintJSClient {
 
 	class TendermintClient {
 		status: IStatus;
-		events: Observable;
 		isSynced: boolean;
+		$eventsSubscription: Observable;
 
 		constructor(options: IClientOptions);
 
 		connect(): void;
+		subscribe(to: string): void;
 		test(): string;
 	}
 }

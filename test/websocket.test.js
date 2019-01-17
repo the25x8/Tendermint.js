@@ -6,7 +6,8 @@ const instance = new TendermintClient({
 });
 
 instance.connect();
+instance.subscribe('blocks');
 
-instance.events.subscribe(data => {
+instance.$eventsSubscription.subscribe(data => {
 	console.log(data);
 });
