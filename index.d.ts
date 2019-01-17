@@ -134,7 +134,6 @@ declare namespace TendermintJSClient {
 	interface IClientOptions {
 		node_rpc: string;
 		node_ws: string;
-		autoSyncToWs?: boolean;
 	}
 
 	class BlockModel implements IBlock {
@@ -153,7 +152,7 @@ declare namespace TendermintJSClient {
 	class TendermintClient {
 		status: IStatus;
 		isSynced: boolean;
-		$eventsSubscription: Observable;
+		$socketEventsSubscription: Observable;
 
 		constructor(options: IClientOptions);
 
