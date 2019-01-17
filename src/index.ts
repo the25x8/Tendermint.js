@@ -63,6 +63,7 @@ export class TendermintClientWS {
 			const openHandler = () => {
 				this.isSynced = true;
 				console.log('Connected to node web socket');
+				this.subscribe('blocks');
 			};
 
 			const closeHandler = (error) => {
@@ -111,7 +112,7 @@ export class TendermintClientWS {
 	 * Static commands for ws
 	 * of Tendermint node
 	 */
-	public subscribe(to: string): void {
+	private subscribe(to: string): void {
 		try {
 			if (to === 'blocks') {
 				this.connection.send(JSON.stringify({
