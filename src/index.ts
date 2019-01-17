@@ -47,11 +47,11 @@ export class TendermintClientWS {
 				const eventData = parsedEvent.result.data;
 
 				if (eventData) {
-					// Block
+					// If data is block
 					if (eventData.type === 'tendermint/event/NewBlock') {
 						observable.next(new BlockModel(eventData.value.block));
 					}
-					// Transaction
+					// if data is tx
 					else if (eventData.type === 'tendermint/event/NewTx') {
 						observable.next(new BlockModel(eventData.value));
 					}
@@ -109,8 +109,7 @@ export class TendermintClientWS {
 	}
 
 	/*
-	 * Static commands for ws
-	 * of Tendermint node
+	 * Subscribe to Tendermint node via websocket
 	 */
 	private subscribe(to: string): void {
 		try {
