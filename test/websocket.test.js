@@ -5,8 +5,9 @@ const instance = new TendermintClient({
 	node_ws: 'ws://localhost:26657'
 });
 
-instance.connect();
-instance.subscribe('blocks');
+instance.connect({
+	subscribeTo: ['blocks']
+});
 
 instance.$eventsSubscription.subscribe(data => {
 	console.log(data);

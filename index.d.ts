@@ -157,8 +157,9 @@ declare namespace TendermintJSClient {
 
 		constructor(options: IClientOptions);
 
-		connect(): void;
-		subscribe(to: string): void;
+		connect(options?: {
+			subscribeTo: string[]
+		}): void;
 		test(): string;
 	}
 }
