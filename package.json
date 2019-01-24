@@ -1,15 +1,14 @@
 {
-  "name": "tendermint-js-client",
+  "name": "tendermint.js",
   "version": "0.0.5-0",
   "description": "The simple and minimalistic lib to get blockchain data from Tendermint node",
   "main": "index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "dev": "./node_modules/.bin/babel --watch ./src --out-dir ./lib --extensions \".ts,.tsx\"",
-    "build": "./node_modules/.bin/babel ./src --out-dir ./lib --extensions \".ts,.tsx\"",
-    "build-prod": "./node_modules/.bin/babel ./src --out-dir ./lib --extensions \".ts,.tsx\" --presets minify",
-    "prepublish": "npm run build",
+    "tsc": "tsc --emitDeclarationOnly",
     "publish": "npm publish",
+    "build:node": "npm run tsc && webpack --config=webpack.config.js --env.MODE=production --env.TARGET=node",
+    "build:browser": "npm run tsc && webpack --env.MODE=production --env.TARGET=web",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint-fix": "tslint --fix -c tslint.json 'src/**/*.ts'",
     "test": "jest"
@@ -27,20 +26,24 @@
   "dependencies": {
     "axios": "^0.18.0",
     "msgpack-lite": "^0.1.26",
-    "ws": "^6.1.2",
-    "zen-observable": "^0.8.11"
+    "zen-observable": "^0.8.11",
+    "ws": "^6.1.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-typescript": "^7.1.0",
     "@types/node": "^10.12.18",
+    "@types/webpack-env": "^1.13.6",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-loader": "^8.0.5",
     "babel-preset-minify": "^0.5.0",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "source-map-loader": "^0.2.4"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
