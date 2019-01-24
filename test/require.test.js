@@ -1,4 +1,4 @@
-const { TendermintClient } = require('../lib/index');
+const { TendermintClient } = require('../lib/tendermint.js');
 
 test('Require lib as commonjs module', () => {
 	const instance = new TendermintClient();

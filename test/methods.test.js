@@ -1,4 +1,4 @@
-import { TendermintClient } from '../lib/index';
+import { TendermintClient } from '../lib/tendermint.js';
 
 // Init Tendermint-Client instance
 const instance = new TendermintClient({

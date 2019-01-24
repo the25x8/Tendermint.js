@@ -7,7 +7,7 @@ const target = process.env.TARGET ? process.env.TARGET : 'node';
 module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'lib'),
-		filename: 'tendermint.js',
+		filename: 'tendermint' + target === 'web' ? '.umd.js' : '.js',
 		libraryTarget: 'umd',
 		library: 'tendermintJs',
 		umdNamedDefine: true
