@@ -30,11 +30,12 @@ const options = {
 const tmJs = new TendermintJs(options);
 
 // Connect to ws
-tmJs.connect()
+tmJs.socket.connect(['blocks'])
 	.then(() => {
-		console.log('Test: Connected to ws - ok');
-	}).catch(() => {
-		console.log('Test: Connected to ws - error');
+		console.info('Tendermint.connect: Connected to node websocket');
+	})
+	.catch(() => {
+		console.error('Tendermint.connect: Websocket connection error');
 	});
 
 // Subscribe to events
