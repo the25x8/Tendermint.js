@@ -8,7 +8,7 @@
     "tsc": "tsc --emitDeclarationOnly",
     "publish": "npm publish",
     "build:node": "npm run tsc && webpack --config=webpack.config.js --env.MODE=production --env.TARGET=node",
-    "build:browser": "npm run tsc && webpack --env.MODE=production --env.TARGET=web",
+    "build:browser": "npm run tsc && webpack --config=webpack.config.js --env.MODE=development --env.TARGET=web",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint-fix": "tslint --fix -c tslint.json 'src/**/*.ts'",
     "test": "jest"
