@@ -18,13 +18,16 @@ You can use this library on your node and browser too.<br>
 See [examples folder](https://github.com/cryptoji/Tendermint.js/tree/master/examples) for getting more information.
 
 ###### Import library
-* ES6 imports ```javascript
+* ES6 imports
+```javascript
 import TendermintJS from 'tendermint.js'
 ```
-* Require ```javascript
+* Require
+```javascript
 var TendermintJS = require('tendermint.js')
 ```
-* Browser ```
+* Browser
+```
 <script src="YOUR_PATH/tendermint.js"></script>
 ```
 
