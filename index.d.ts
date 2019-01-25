@@ -159,7 +159,7 @@ declare namespace TendermintJS {
 		constructor(rawTx: ITx);
 	}
 
-	class TendermintJS {
+	export default class TendermintJS {
 		status: IStatus;
 		socket: ISocketClient;
 		rpc: any;
