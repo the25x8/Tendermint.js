@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cryptoji/Tendermint-JS-Client.git"
+    "url": "git+https://github.com/cryptoji/Tendermint.js.git"
   },
   "author": "cryptoji",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/cryptoji/Tendermint-JS-Client/issues"
+    "url": "https://github.com/cryptoji/Tendermint.js/issues"
   },
-  "homepage": "https://github.com/cryptoji/Tendermint-JS-Client#readme",
+  "homepage": "https://github.com/cryptoji/Tendermint.js#readme",
   "dependencies": {
     "axios": "^0.18.0",
     "msgpack-lite": "^0.1.26",
