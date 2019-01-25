@@ -13,7 +13,7 @@ export interface IClientOptions {
  * This is abstract wrapper
  * for RpcClient and SocketClient
  */
-export class TendermintJs {
+export default class TendermintJs {
 	private options: IClientOptions;
 
 	public status: IStatus; // Last sync node status
@@ -31,5 +31,4 @@ export class TendermintJs {
 	public test() {
 		return 'ok';
 	}
-
 }
