@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <script type="text/javascript" src="../lib/tendermint.umd.js"></script>
+  <script type="text/javascript">
+	  var tmJs = new TendermintJS({
+		  node_rpc: 'http://localhost:26657',
+		  node_ws: 'ws://localhost:26657',
+		  logs: true
+	  });
+
+	  // Connect to ws
+	  tmJs.socket.connect(['blocks'])
+		  .then(() => {
+			  console.info('Tendermint.connect: Connected to node websocket');
+		  })
+		  .catch(() => {
+			  console.error('Tendermint.connect: Websocket connection error');
+		  });
+
+	  // Subscribe to events
+	  tmJs.socket.$events.subscribe(data => {
+		  console.log(data);
+	  });
+  </script>
+</body>
+</html>

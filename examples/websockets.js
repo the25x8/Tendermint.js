@@ -1,4 +1,4 @@
-const { TendermintJs, SocketClient } = require('../lib/tendermint.js');
+const TendermintJS = require('../lib/tendermint.js');
 
 const options = {
 	node_rpc: 'http://localhost:26657',
@@ -6,28 +6,7 @@ const options = {
 	logs: true
 };
 
-// SocketClient class tests
-// const blocks = [];
-//
-// const tmWsInstance = new SocketClient(options);
-//
-// tmWsInstance
-// 	.connect()
-// 	.then(() => {
-// 		tmWsInstance.subscribe('blocks');
-// 		console.log('Web socket is connected');
-// 	})
-// 	.catch(() => {
-// 		console.error('Web socket connection error');
-// 	});
-//
-// tmWsInstance.$socketEventsSubscription.subscribe(data => {
-// 	blocks.push(data);
-// 	console.log(blocks);
-// });
-
-// Tests for TendermintJs socket wrapper
-const tmJs = new TendermintJs(options);
+const tmJs = new TendermintJS(options);
 
 // Connect to ws
 tmJs.socket.connect(['blocks'])
