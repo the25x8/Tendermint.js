@@ -26,7 +26,7 @@ var TendermintJS = require('tendermint.js')
 ```
 ###### Browser
 ```html
-<script src="YOUR_PATH/tendermint.js"></script>
+<script src="YOUR_PATH/tendermint.umd.js"></script>
 ```
 
 ##### Create a reference to the instance

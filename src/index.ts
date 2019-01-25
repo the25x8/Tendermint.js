@@ -1,12 +1,12 @@
 import '@babel/polyfill';
 import { IStatus } from './interfaces/status';
-import { SocketClient } from './socketClient';
 import { RpcClient } from './rpcClient';
+import { SocketClient } from './socketClient';
 
 export interface IClientOptions {
-	node_rpc: string;
-	node_ws: string;
-	logs: boolean;
+  node_rpc: string;
+  node_ws: string;
+  logs: boolean;
 }
 
 /*
@@ -14,21 +14,21 @@ export interface IClientOptions {
  * for RpcClient and SocketClient
  */
 export default class TendermintJs {
-	private options: IClientOptions;
 
-	public status: IStatus; // Last sync node status
-	public socket: SocketClient;
-	public rpc: RpcClient;
+  public status: IStatus; // Last sync node status
+  public socket: SocketClient;
+  public rpc: RpcClient;
+  private options: IClientOptions;
 
-	constructor(options: IClientOptions) {
-		this.options = options;
+  constructor(options: IClientOptions) {
+    this.options = options;
 
-		// Create instances
-		this.socket = new SocketClient(options);
-		this.rpc = new RpcClient(options);
-	}
+    // Create instances
+    this.socket = new SocketClient(options);
+    this.rpc = new RpcClient(options);
+  }
 
-	public test() {
-		return 'ok';
-	}
+  public test() {
+    return 'ok';
+  }
 }

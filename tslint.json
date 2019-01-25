@@ -9,7 +9,7 @@
       true,
       "single"
     ],
-    "indent": [true, "tabs", 2]
+    "indent": [true, "spaces", 2]
   },
   "rulesDirectory": []
 }

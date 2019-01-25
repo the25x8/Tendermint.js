@@ -18,12 +18,12 @@ module.exports = env => {
 		mode,
 		entry: './src/index.ts',
 		resolve: {
-			extensions: ['.ts', '.tsx', '.js'],
+			extensions: ['.ts', '.js'],
 		},
 		module: {
 			rules: [
 				{
-					test: /\.(ts|tsx|js|jsx)$/,
+					test: /\.(ts|js)$/,
 					loader: 'babel-loader',
 				},
 				{
