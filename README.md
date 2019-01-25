@@ -24,7 +24,7 @@ import TendermintJS from 'tendermint.js'
 * Require ```javascript
 var TendermintJS = require('tendermint.js')
 ```
-* Browser ```html
+* Browser ```
 <script src="YOUR_PATH/tendermint.js"></script>
 ```
 
