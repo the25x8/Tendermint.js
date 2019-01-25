@@ -1,7 +1,7 @@
-import { TendermintClient } from '../lib/tendermint.js';
+import TendermintJS from '../lib/tendermint.js';
 
 // Init Tendermint-Client instance
-const instance = new TendermintClient({
+const tm = new TendermintJS({
 	node_rpc: 'http://localhost:26657',
 	node_ws: 'ws://localhost:26657'
 });
