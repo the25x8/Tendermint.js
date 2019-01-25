@@ -13,19 +13,18 @@ The simple and minimalistic javascript lib to get Tendermint blockchain data fro
 ---
 
 ### Usage
-You can use this library on your node and browser too.<br>
-See [examples folder](https://github.com/cryptoji/Tendermint.js/tree/master/examples) for getting more information.
+You can use this library on your node and browser too. See [examples folder](https://github.com/cryptoji/Tendermint.js/tree/master/examples) for getting more information.
 
 ##### Import library
-* ES6 imports
+###### ES6 imports
 ```javascript
 import TendermintJS from 'tendermint.js'
 ```
-* Require
+###### Require
 ```javascript
 var TendermintJS = require('tendermint.js')
 ```
-* Browser
+###### Browser
 ```html
 <script src="YOUR_PATH/tendermint.js"></script>
 ```

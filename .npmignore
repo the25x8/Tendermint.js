@@ -6,5 +6,8 @@ test
 .eslintrc
 .gitignore
 tslint.json
+test
 examples
 src
+lib/tendermint.umd.js
+webpack.config.js
