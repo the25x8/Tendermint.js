@@ -1,13 +1,14 @@
 // const { decode } = require('msgpack-lite');
-import { IClientOptions } from './index';
+import { IGlobalOptions } from './index';
 
 const Observable = require('zen-observable');
 const WS = require('ws');
 
 import { BlockModel } from './models/block';
+import { TxModel } from './models/tx';
 
 /*
- * TM web-socket class
+ * Tendermint websocket client
  */
 export class SocketClient {
 
@@ -17,33 +18,33 @@ export class SocketClient {
   // Observer events, only subscription
   // all data should parse and save on your client
   public $events: any;
-  private options: IClientOptions; // Global options
+  private options: IGlobalOptions; // Global options
   private connection: any; // Ws connection
 
-  constructor(options: IClientOptions) {
+  constructor(options: IGlobalOptions) {
     this.isNode = typeof window === 'undefined';
     this.options = options;
   }
 
-  /*
+	/*
 	 * Connect to node via web socket
 	 * subscribe to NewBlocks, NewTxs(optional)
 	 * emit data through observable pattern
 	 */
-  public connect(eventsTypes: string[]): Promise {
+  public connect(eventsTypes: string[] = []): Promise {
     return new Promise((resolve, reject) => {
       if (!this.options.node_ws) {
         console.error('You need set node_ws property in connect method arguments');
         reject();
       }
 
-      /*
-		 * Create an observable object with
-		 * socket instance and event handlers
-		 */
+	    /*
+			 * Create an observable object with
+			 * socket instance and event handlers
+			 */
       this.$events = new Observable((observable) => {
 
-        /*
+	      /*
 				 * WebSocket events handlers
 				 */
         // Socket events/messages handler
@@ -53,15 +54,24 @@ export class SocketClient {
           const eventData = parsedEvent.result.data;
 
           if (!eventData) {
-            observable.next(parsedEvent);
+            observable.next({
+              type: 'unknown',
+              data: parsedEvent
+            });
             return;
           }
 
-          // If data is block
+          // Switch models by event types
           if (eventData.type === 'tendermint/event/NewBlock') {
-            observable.next(new BlockModel(eventData.value.block));
-          } else if (eventData.type === 'tendermint/event/NewTx') {
-            observable.next(new BlockModel(eventData.value));
+            observable.next({
+              type: 'block',
+              data: new BlockModel(eventData.value.block)
+            });
+          } else if (eventData.type === 'tendermint/event/Tx') {
+            observable.next({
+              type: 'tx',
+              data: new TxModel(eventData.value.TxResult)
+            });
           }
         };
 
@@ -73,8 +83,10 @@ export class SocketClient {
             console.info('Connected to node web socket');
           }
 
-          // Subscribe to ws events
-          eventsTypes.forEach((eventType) => this.subscribe(eventType));
+          // Subscribe to initial events
+          eventsTypes.forEach(
+            (eventType) => this.eventAction('subscribe', eventType)
+          );
 
           resolve();
         };
@@ -95,7 +107,7 @@ export class SocketClient {
           reject();
         };
 
-        /*
+	      /*
 				 * Use different realisations to call
 				 * of WebSockets for browser and node
 				 */
@@ -126,43 +138,41 @@ export class SocketClient {
     });
   }
 
-  private unsubscribe(): void {
-
-  }
-
-  /*
-	 * Subscribe to Tendermint node via websocket
+	/*
+	 * Subscribe/Unsubscribe events from Tendermint node
 	 */
-  private subscribe(to: string): boolean {
-    try {
-      let methodParams: {
-        id: string;
-        query: string;
-      };
+  public action(
+    method: 'subscribe'|'unsubscribe',
+    type?: 'blocks'|'txs'
+  ): void {
+	  try {
+		  let methodParams: {
+			  id: string;
+			  query: string;
+		  };
 
-      if (to === 'blocks') {
-        methodParams = {
-          id:  'explorer-sub-to-blocks',
-          query: 'tm.event=\'NewBlock\'',
-        };
-      } else if (to === 'txs') {
-        methodParams = {
-          id:  'explorer-sub-to-txs',
-          query: 'tm.event=\'NewTx\'',
-        };
-      } else { return; }
+		  if (type === 'blocks') {
+			  methodParams = {
+				  id:  `${method}-out-blocks`,
+				  query: 'tm.event=\'NewBlock\'',
+			  };
+		  } else if (type === 'txs') {
+			  methodParams = {
+				  id:  `${method}-out-txs`,
+				  query: 'tm.event=\'Tx\'',
+			  };
+		  } else {
+			  return;
+		  }
 
-      this.connection.send(JSON.stringify({
-        id: methodParams.id,
-        jsonrpc: '2.0',
-        method: 'subscribe',
-        params: { query: methodParams.query },
-      }));
-
-      return true;
-    } catch (e) {
-      console.error(e);
-      return;
-    }
+		  this.connection.send(JSON.stringify({
+			  id: methodParams.id,
+			  jsonrpc: '2.0',
+			  params: { query: methodParams.query },
+			  method
+		  }));
+	  } catch (e) {
+		  console.error(e);
+	  }
   }
 }
