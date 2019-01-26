@@ -1,5 +1,4 @@
 # Tendermint.js
-Current version is `0.0.6`<br>
 The simple and minimalistic javascript lib to get Tendermint blockchain data from node rpc and websocket
 
 ---
@@ -15,8 +14,8 @@ The simple and minimalistic javascript lib to get Tendermint blockchain data fro
 ### Usage
 You can use this library on your node and browser too. See [examples folder](https://github.com/cryptoji/Tendermint.js/tree/master/examples) for getting more information.
 
-##### Import library
-###### ES6 imports
+#### Import library
+##### ES6 imports
 ```javascript
 import TendermintJS from 'tendermint.js'
 ```
@@ -29,7 +28,7 @@ var TendermintJS = require('tendermint.js')
 <script src="YOUR_PATH/tendermint.umd.js"></script>
 ```
 
-##### Create a reference to the instance
+#### Create a reference to the instance
 ```javascript
 const tm = new TendermintJS({
     node_rpc: 'http://localhost:26657',
