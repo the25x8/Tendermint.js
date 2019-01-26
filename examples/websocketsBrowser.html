@@ -14,7 +14,7 @@
       node_ws: 'ws://localhost:26657',
       logs: true
     });
-    
+
     // Connect to node events via websocket
     tmJs.socket.connect(['blocks'])
       .then(() => {
@@ -29,8 +29,8 @@
       createBlockElement(data);
     });
 
-	  function createBlockElement(rawBlock) {
-	    var block = TendermintJS.createBlockModel('', rawBlock);
+    function createBlockElement(rawBlock) {
+      var block = TendermintJS.createBlockModel('', rawBlock);
 
       var blockElement = document.createElement('div');
       var hashText = document.createElement('h4');
