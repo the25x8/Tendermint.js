@@ -8,14 +8,22 @@ const options = {
 
 const tmJs = new TendermintJS(options);
 
-// Connect to ws
-tmJs.socket.connect(['blocks'])
+// Connect to websocket
+tmJs.socket.connect(['blocks', 'txs'])
   .then(() => {
     console.info('Tendermint.connect: Connected to node websocket');
+
+    // Alt subscribe way
+    // tmJs.socket.eventAction('subscribe', 'blocks');
+    // tmJs.socket.eventAction('subscribe', 'txs');
+
+    // Unsubscribe out events tests
+    setTimeout(() => {
+      tmJs.socket.action('unsubscribe', 'blocks');
+      tmJs.socket.action('unsubscribe', 'txs');
+    }, 5000);
   })
-  .catch(() => {
-    console.error('Tendermint.connect: Websocket connection error');
-  });
+  .catch(() => console.error('Tendermint.connect: Websocket connection error'));
 
 // Subscribe to events
 tmJs.socket.$events.subscribe(data => {
