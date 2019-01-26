@@ -3,12 +3,7 @@ import Axios from 'axios';
 
 import { BlockModel } from './models/block';
 import { TxModel } from './models/tx';
-
-export interface IClientOptions {
-  node_rpc: string;
-  node_ws: string;
-  logs: boolean;
-}
+import { IGlobalOptions } from './index';
 
 /*
  * TM RPC class and interfaces
@@ -21,9 +16,9 @@ export interface ISearchByQuery {
 }
 
 export class RpcClient {
-  private options: IClientOptions;
+  private options: IGlobalOptions;
 
-  constructor(options: IClientOptions) {
+  constructor(options: IGlobalOptions) {
     this.options = options;
   }
 

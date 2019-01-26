@@ -10,9 +10,9 @@ module.exports = env => {
     output: {
       path: path.resolve(__dirname, 'lib'),
       filename: outputFilename,
-      libraryTarget: 'umd',
       library: 'TendermintJS',
-      libraryExport: 'default'
+      libraryExport: 'default',
+      libraryTarget: 'umd'
     },
     target,
     mode,
