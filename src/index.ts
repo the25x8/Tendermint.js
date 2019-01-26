@@ -11,7 +11,7 @@ import { IBlock } from './interfaces/block';
 import { TxModel } from './models/tx';
 import { ITx } from './interfaces/tx';
 
-export interface IClientOptions {
+export interface IGlobalOptions {
   node_rpc: string;
   node_ws: string;
   logs: boolean;
@@ -26,23 +26,21 @@ export default class TendermintJs {
   public status: IStatus; // Last sync node status
   public socket: SocketClient;
   public rpc: RpcClient;
-  private options: IClientOptions;
 
-  constructor(options: IClientOptions) {
+  // Static factory methods
+	public static createBlockModel = (rawBlock: IBlock): BlockModel => new BlockModel(rawBlock);
+	public static createTxModel = (rawTx: ITx): TxModel => new TxModel(rawTx);
+
+  // Global options
+  private options: IGlobalOptions;
+
+  constructor(options: IGlobalOptions) {
     this.options = options;
 
-    // Create instances
-    this.socket = new SocketClient(options);
-    this.rpc = new RpcClient(options);
+	  // Create instances
+	  this.socket = new SocketClient(options);
+	  this.rpc = new RpcClient(options);
   }
-
-	public static createBlockModel(type, rawBlock: IBlock): BlockModel {
-		return new BlockModel(rawBlock);
-	}
-
-	public static createTxModel(rawTx: ITx): TxModel {
-    return new TxModel(rawTx);
-	}
 
   public test() {
     return 'ok';

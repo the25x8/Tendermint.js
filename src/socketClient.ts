@@ -85,7 +85,7 @@ export class SocketClient {
 
           // Subscribe to initial events
           eventsTypes.forEach(
-            (eventType) => this.eventAction('subscribe', eventType)
+            (eventType) => this.action('subscribe', eventType)
           );
 
           resolve();
@@ -143,7 +143,7 @@ export class SocketClient {
 	 */
   public action(
     method: 'subscribe'|'unsubscribe',
-    type?: 'blocks'|'txs'
+    type: string
   ): void {
 	  try {
 		  let methodParams: {
