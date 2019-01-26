@@ -1,4 +1,6 @@
 // tslint:disable-next-line:export-just-namespace
+import {ITxProof, ITxResult, ITxResultTag} from "./src/interfaces/tx";
+
 export = TendermintJS;
 export as namespace TendermintJS;
 
@@ -25,11 +27,11 @@ declare namespace TendermintJS {
 		height: string;
 		validator_index: string;
 		validator_address: string;
+		block_id: IBlockID;
 		signature: {
 			data: string;
 			type: string;
 		};
-		block_id: IBlockID;
 	}
 
 	interface IBlockLastCommit {
@@ -81,13 +83,21 @@ declare namespace TendermintJS {
 		code?: string;
 	}
 
+	interface ITxResultTag {
+		key: string;
+		value: string;
+	}
+
 	interface ITx {
 		proof: ITxProof;
-		index: string;
-		height: string;
+		index: number;
+		height: number;
 		hash: string;
 		tx: string;
 		tx_result: ITxResult;
+		result?: {
+			tags?: ITxResultTag[];
+		}
 	}
 
 	interface IStatusValidatorInfo {
@@ -144,6 +154,7 @@ declare namespace TendermintJS {
 		constructor(options: IClientOptions);
 
 		connect(eventsTypes: string[]): Promise;
+		action(method: 'subscribe'|'unsubscribe', type: 'blocks'|'txs');
 	}
 
 	class BlockModel implements IBlock {
@@ -156,6 +167,13 @@ declare namespace TendermintJS {
 	}
 
 	class TxModel {
+		public proof: object;
+		public tx: string;
+		public tx_result: object;
+		public index: number;
+		public height: number;
+		public hash: string;
+
 		constructor(rawTx: ITx);
 	}
 
