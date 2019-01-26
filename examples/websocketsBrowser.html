@@ -9,25 +9,25 @@
 
   <script type="text/javascript" src="../lib/tendermint.umd.js"></script>
   <script type="text/javascript">
-	  var tmJs = new TendermintJS({
-		  node_rpc: 'http://localhost:26657',
-		  node_ws: 'ws://localhost:26657',
-		  logs: true
-	  });
-
-	  // Connect to node events via websocket
-	  tmJs.socket.connect(['blocks'])
+    var tmJs = new TendermintJS({
+      node_rpc: 'http://localhost:26657',
+      node_ws: 'ws://localhost:26657',
+      logs: true
+    });
+    
+    // Connect to node events via websocket
+    tmJs.socket.connect(['blocks'])
       .then(() => {
-			  console.info('Tendermint.connect: Connected to node websocket');
-		  })
-		  .catch(() => {
-			  console.error('Tendermint.connect: Websocket connection error');
-		  });
+        console.info('Tendermint.connect: Connected to node websocket');
+      })
+      .catch(() => {
+        console.error('Tendermint.connect: Websocket connection error');
+      });
 
-	  // Subscribe to events
-	  tmJs.socket.$events.subscribe(data => {
+    // Subscribe to events
+    tmJs.socket.$events.subscribe(data => {
       createBlockElement(data);
-	  });
+    });
 
 	  function createBlockElement(rawBlock) {
 	    var block = TendermintJS.createBlockModel('', rawBlock);
