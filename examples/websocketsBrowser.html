@@ -3,52 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <style type="text/css">
+    .content {
+      display: flex;
+    }
+    .content section {
+      background-color: lightgray;
+      width: 50%;
+      padding: 20px;
+    }
+    .content section:first-child {
+      border-right: 1px solid white;
+    }
+    #blocks,
+    #txs {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div id="blocks"></div>
+  <h3>Tendermint.js websocket example</h3>
+  <div class="content">
+    <section>
+      <h1>Blocks</h1>
+      <button id="toggleSubscribeBlocks"></button>
+      <div id="blocks"></div>
+    </section>
+    <section>
+      <h1>Txs</h1>
+      <button id="toggleSubscribeTxs"></button>
+      <div id="txs"></div>
+    </section>
+  </div>
 
   <script type="text/javascript" src="../lib/tendermint.umd.js"></script>
   <script type="text/javascript">
+    // ----------------------
+    // Create instance
     var tmJs = new TendermintJS({
       node_rpc: 'http://localhost:26657',
       node_ws: 'ws://localhost:26657',
       logs: true
     });
 
-    // Connect to node events via websocket
-    tmJs.socket.connect(['blocks'])
-      .then(() => {
-        console.info('Tendermint.connect: Connected to node websocket');
-      })
-      .catch(() => {
-        console.error('Tendermint.connect: Websocket connection error');
-      });
-
-    // Subscribe to events
-    tmJs.socket.$events.subscribe(data => {
-      createBlockElement(data);
+    // -----------------------
+    // Connect to node via websockets
+    // and subscribe to events
+    tmJs.socket.connect().then(() => {
+      console.info('Tendermint.connect: Connected to node websocket');
+    }).catch(() => {
+      console.error('Tendermint.connect: Websocket connection error');
     });
 
-    function createBlockElement(rawBlock) {
-      var block = TendermintJS.createBlockModel('', rawBlock);
+    // Subscribe to events
+    tmJs.socket.$events.subscribe(event => {
+      console.log(event.data);
+      if (event.type === 'block') {
+        createBlockElement(event.data);
+      } else if (event.type === 'tx') {
+        createTxElement(event.data);
+      }
+    });
 
+    // ---------------------------
+    // Creators of list elements
+    var createTxElement = function (rawTx) {
+      var tx = TendermintJS.createTxModel(rawTx);
+      var txElement = document.createElement('div');
+
+      txElement.innerHTML = `
+        <h4>Tx: ${tx.tx}</h4>
+        <p>Height: ${tx.height}</p>
+        <p>Tx result: ${JSON.stringify(tx.tx_result)}</p>
+      `;
+
+      document.getElementById('txs').appendChild(txElement);
+      document.getElementById('txs').appendChild(document.createElement('hr'));
+    }
+
+    var createBlockElement = function(rawBlock) {
+      var block = TendermintJS.createBlockModel(rawBlock);
       var blockElement = document.createElement('div');
-      var hashText = document.createElement('h4');
-      var timeText = document.createElement('p');
-      var heightText = document.createElement('p');
 
-      hashText.innerHTML = block.header.consensus_hash;
-      timeText.innerHTML = block.header.time;
-      heightText.innerHTML = block.header.height;
-
-      blockElement.appendChild(hashText);
-      blockElement.appendChild(timeText);
-      blockElement.appendChild(heightText);
+      blockElement.innerHTML = `
+        <h4>Consensus hash: ${block.header.consensus_hash}</h4>
+        <p>Time: ${block.header.time}</p>
+        <p>Height: ${block.header.height}</p>
+      `;
 
       document.getElementById('blocks').appendChild(blockElement);
       document.getElementById('blocks').appendChild(document.createElement('hr'));
+    };
 
-      window.scroll(0, document.body.scrollHeight);
+    // ---------------------
+    // UI buttons logic
+    var toggleSubscribeElements = {
+      blocks: {
+        element: document.getElementById('toggleSubscribeBlocks'),
+        isSubscribed: false
+      },
+      txs: {
+        element: document.getElementById('toggleSubscribeTxs'),
+        isSubscribed: false
+      }
+    };
+
+    toggleSubscribeElements.blocks.element.innerHTML = 'Subscribe to blocks';
+    toggleSubscribeElements.blocks.element.onclick = function() {
+      toggleSubscribe('blocks');
+    };
+
+    toggleSubscribeElements.txs.element.innerHTML = 'Subscribe to txs';
+    toggleSubscribeElements.txs.element.onclick = function() {
+      toggleSubscribe('txs');
+    };
+
+    function toggleSubscribe(type) {
+      if (!toggleSubscribeElements[type].isSubscribed) {
+        tmJs.socket.action('subscribe', type);
+        toggleSubscribeElements[type].isSubscribed = true;
+        toggleSubscribeElements[type].element.innerHTML = 'Unsubscribe out ' + type;
+      } else {
+        tmJs.socket.action('unsubscribe', type);
+        toggleSubscribeElements[type].isSubscribed = false;
+        toggleSubscribeElements[type].element.innerHTML = 'Subscribe to ' + type;
+      }
     }
   </script>
 </body>
