@@ -5,6 +5,8 @@
   <title>Title</title>
 </head>
 <body>
+  <div id="blocks"></div>
+
   <script type="text/javascript" src="../lib/tendermint.umd.js"></script>
   <script type="text/javascript">
 	  var tmJs = new TendermintJS({
@@ -13,9 +15,9 @@
 		  logs: true
 	  });
 
-	  // Connect to ws
+	  // Connect to node events via websocket
 	  tmJs.socket.connect(['blocks'])
-		  .then(() => {
+      .then(() => {
 			  console.info('Tendermint.connect: Connected to node websocket');
 		  })
 		  .catch(() => {
@@ -24,8 +26,30 @@
 
 	  // Subscribe to events
 	  tmJs.socket.$events.subscribe(data => {
-		  console.log(data);
+      createBlockElement(data);
 	  });
+
+	  function createBlockElement(rawBlock) {
+	    var block = TendermintJS.createBlockModel('', rawBlock);
+
+      var blockElement = document.createElement('div');
+      var hashText = document.createElement('h4');
+      var timeText = document.createElement('p');
+      var heightText = document.createElement('p');
+
+      hashText.innerHTML = block.header.consensus_hash;
+      timeText.innerHTML = block.header.time;
+      heightText.innerHTML = block.header.height;
+
+      blockElement.appendChild(hashText);
+      blockElement.appendChild(timeText);
+      blockElement.appendChild(heightText);
+
+      document.getElementById('blocks').appendChild(blockElement);
+      document.getElementById('blocks').appendChild(document.createElement('hr'));
+
+      window.scroll(0, document.body.scrollHeight);
+    }
   </script>
 </body>
 </html>
