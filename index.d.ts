@@ -1,16 +1,14 @@
 // tslint:disable-next-line:export-just-namespace
-import {ITxProof, ITxResult, ITxResultTag} from "./src/interfaces/tx";
-
 export = TendermintJS;
 export as namespace TendermintJS;
 
 declare namespace TendermintJS {
-	class Observable {
-		subscribe(observer: any): any;
-		forEach(fn: any): void;
-		map(fn: any): any;
-		filter(fn: any): any;
-		reduce(fn: any): any;
+	class EventBus {
+		private events: {};
+		constructor();
+		public emit(eventName: string, payload: any): void;
+		public on(eventName: string, callback: object): { off: object };
+		public off(eventName: string): void;
 	}
 
 	interface IBlockID {
@@ -149,12 +147,19 @@ declare namespace TendermintJS {
 
 	interface ISocketClient {
 		isSynced: boolean;
-		$events: Observable;
+		$events: EventBus;
 
 		constructor(options: IClientOptions);
 
-		connect(eventsTypes: string[]): Promise;
-		action(method: 'subscribe'|'unsubscribe', type: 'blocks'|'txs');
+		connect(eventsTypes: string[] = []): Promise;
+		action(
+			method: 'subscribe'|'unsubscribe',
+			type: 'blocks'|'txs'
+		);
+	}
+
+	interface IRpcClient {
+		constructor();
 	}
 
 	class BlockModel implements IBlock {
@@ -178,9 +183,10 @@ declare namespace TendermintJS {
 	}
 
 	export default class TendermintJS {
-		status: IStatus;
+		static createBlockModel: (rawBlock: IBlock) => BlockModel;
+		static createTxModel: (rawTx: ITx) => TxModel;
 		socket: ISocketClient;
-		rpc: any;
+		rpc: IRpcClient;
 
 		constructor(options: IClientOptions);
 
