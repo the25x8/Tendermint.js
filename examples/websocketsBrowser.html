@@ -55,14 +55,14 @@
       console.error('Tendermint.connect: Websocket connection error');
     });
 
-    // Subscribe to events
-    tmJs.socket.$events.subscribe(event => {
-      console.log(event.data);
-      if (event.type === 'block') {
-        createBlockElement(event.data);
-      } else if (event.type === 'tx') {
-        createTxElement(event.data);
-      }
+    tmJs.socket.$events.on('block', function(payload) {
+      console.log(payload);
+      createBlockElement(payload.data);
+    });
+
+    tmJs.socket.$events.on('tx', function(payload) {
+      console.log(payload);
+      createTxElement(payload.data);
     });
 
     // ---------------------------
