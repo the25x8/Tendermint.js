@@ -26,6 +26,13 @@ tmJs.socket.connect(['blocks', 'txs'])
   .catch(() => console.error('Tendermint.connect: Websocket connection error'));
 
 // Subscribe to events
-tmJs.socket.$events.subscribe(data => {
-  console.log(data);
+tmJs.socket.$events.on('block', (payload) => {
+  console.log(payload);
 });
+
+tmJs.socket.$events.on('tx', (payload) => {
+  console.log(payload);
+});
+
+tmJs.socket.$events.off('tx');
+// or listenerRef.off();

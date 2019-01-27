@@ -4,7 +4,7 @@ The simple and minimalistic javascript lib to get Tendermint blockchain data fro
 ---
 
 ### Install
-`npm i tendermint-js-client` or `yarn add tendermint-js-client`
+`npm i tendermint.js` or `yarn add tendermint.js`
 
 ### Test
 `npm run test`
