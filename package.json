@@ -1,6 +1,6 @@
 {
   "name": "tendermint.js",
-  "version": "0.0.30",
+  "version": "0.0.34",
   "description": "The simple and minimalistic lib to get blockchain data from Tendermint node",
   "main": "index.js",
   "types": "./index.d.ts",
