@@ -25,8 +25,8 @@ export class BlockModel implements IBlock {
     this.data = rawBlock.data;
 
     if (rawBlock.data.txs) {
-	    this.txs = rawBlock.data.txs.map(
-	      txBytes => decode(Buffer.from(txBytes, 'base64'))
+      this.txs = rawBlock.data.txs.map(
+        (txBytes) => decode(Buffer.from(txBytes, 'base64')),
       );
     }
   }
