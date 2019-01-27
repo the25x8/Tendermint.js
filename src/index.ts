@@ -30,15 +30,15 @@ export default class TendermintJs {
   public rpc: RpcClient;
 
   // Global options
-	private options: IGlobalOptions;
+  private options: IGlobalOptions;
 
-	constructor(options: IGlobalOptions) {
-		this.options = options;
+  constructor(options: IGlobalOptions) {
+    this.options = options;
 
-		// Create instances
-		this.socket = new SocketClient(options);
-		this.rpc = new RpcClient(options);
-	}
+    // Create instances
+    this.socket = new SocketClient(options);
+    this.rpc = new RpcClient(options);
+  }
 
   public test() {
     return 'ok';

@@ -18,14 +18,14 @@ export class TxModel implements ITx {
 
   constructor(rawTx: ITx) {
     this.proof = rawTx.proof;
-   this.tx = rawTx.tx;
-   this.tx_decoded = decode(Buffer.from(rawTx.tx, 'base64'));
-   this.tx_result = rawTx.tx_result || rawTx.result;
-   this.index = rawTx.index;
-   this.height = rawTx.height;
-   this.hash = rawTx.hash;
+    this.tx = rawTx.tx;
+    this.tx_decoded = decode(Buffer.from(rawTx.tx, 'base64'));
+    this.tx_result = rawTx.tx_result || rawTx.result;
+    this.index = rawTx.index;
+    this.height = rawTx.height;
+    this.hash = rawTx.hash;
 
-   if (this.tx_result.tags) {
+    if (this.tx_result.tags) {
       this.result.tags = this.tx_result.tags.reduce(
         (memo, group) => {
           memo[atob(group.key)] = group.value ? atob(group.value) : null;
