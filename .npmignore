@@ -11,3 +11,4 @@ examples
 src
 lib/tendermint.umd.js
 webpack.config.js
+coverage

@@ -1,7 +1,7 @@
 {
   "name": "tendermint.js",
-  "version": "0.0.34",
-  "description": "The simple and minimalistic lib to get blockchain data from Tendermint node",
+  "version": "0.0.35",
+  "description": "The simple and minimalistic library to get blockchain data from Tendermint node",
   "main": "index.js",
   "types": "./index.d.ts",
   "scripts": {
@@ -11,7 +11,7 @@
     "build:browser": "npm run tsc && webpack --config=webpack.config.js --env.MODE=production --env.TARGET=web",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint:fix": "tslint --fix -c tslint.json 'src/**/*.ts'",
-    "test": "jest"
+    "test": "jest --colors --coverage --verbose"
   },
   "repository": {
     "type": "git",

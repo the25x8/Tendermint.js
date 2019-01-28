@@ -7,7 +7,8 @@ declare namespace TendermintJS {
 		private events: {};
 		constructor();
 		public emit(eventName: string, payload: any): void;
-		public on(eventName: string, callback: object): { off: object };
+		public on(eventName: string, callback: object, once: boolean = false): { off: object };
+		public once(eventName: string, callback: object): void;
 		public off(eventName: string): void;
 	}
 
@@ -139,17 +140,17 @@ declare namespace TendermintJS {
 		validator_info: IStatusValidatorInfo;
 	}
 
-	interface IClientOptions {
+	interface IGlobalOptions {
 		node_rpc: string;
 		node_ws: string;
 		logs: boolean;
 	}
 
-	interface ISocketClient {
+	class SocketClient {
 		isSynced: boolean;
 		$events: EventBus;
 
-		constructor(options: IClientOptions);
+		constructor(options: IGlobalOptions);
 
 		connect(eventsTypes: string[] = []): Promise;
 		action(
@@ -158,7 +159,7 @@ declare namespace TendermintJS {
 		);
 	}
 
-	interface IRpcClient {
+	class RpcClient {
 		constructor();
 	}
 
@@ -185,10 +186,12 @@ declare namespace TendermintJS {
 	export default class TendermintJS {
 		static createBlockModel: (rawBlock: IBlock) => BlockModel;
 		static createTxModel: (rawTx: ITx) => TxModel;
-		socket: ISocketClient;
-		rpc: IRpcClient;
+		static eventBus: () => EventBus;
 
-		constructor(options: IClientOptions);
+		socket: SocketClient;
+		rpc: RpcClient;
+
+		constructor(options: IGlobalOptions);
 
 		test(): string;
 	}
