@@ -10,19 +10,25 @@ const options = {
 const tmJs = new TendermintJS(options);
 
 test('Websocket connect', () => {
+	let passed = false;
 	// Connect to ws
 	tmJs.socket.connect(['blocks'])
 		.then(() => {
 			console.info('Tendermint.connect: Connected to node websocket');
+      passed = true;
 		})
 		.catch(() => {
 			console.error('Tendermint.connect: Websocket connection error');
+      passed = true;
 		});
+
+  expect(passed).toBe(true);
 });
 
-test('Websocket subscribe to events', () => {
+test('Subscribe to events', () => {
 	// Subscribe to events
-	tmJs.socket.$events.subscribe(data => {
-		console.log(data);
+	tmJs.socket.$events.on('block', data => {
 	});
+
+  expect(false).toBe(true);
 });
