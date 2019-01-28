@@ -10,12 +10,14 @@ function idGenerator() {
 export interface IEventBus {
   events: {};
   emit(eventName: string, payload: any): void;
-  on(eventName: string, callback: object): { off: object };
+  on(eventName: string, callback: object, once?: boolean): { off: object };
+	once(eventName: string, callback: object): void;
   off(eventName: string): void;
 }
 
-export default class EventBus implements EventBus {
-  private events = {};
+export default class EventBus implements IEventBus {
+  public events = {};
+  public onceEventNames = {};
   private getNextId = idGenerator();
 
   constructor() {}
@@ -30,13 +32,21 @@ export default class EventBus implements EventBus {
     Object.keys(subscription).forEach((id) =>
       this.events[eventName][id](payload),
     );
+
+    if(this.onceEventNames[eventName]) {
+	    this.off(eventName);
+    }
   }
 
-  public on(eventName: string, callback: object): { off: object } {
+  public on(eventName: string, callback: object, once = false): { off: object } {
     const id: number = this.getNextId();
 
     if (!this.events[eventName]) {
       this.events[eventName] = {};
+    }
+
+    if (once) {
+      this.onceEventNames[eventName] = true;
     }
 
     this.events[eventName][id] = callback;
@@ -54,8 +64,16 @@ export default class EventBus implements EventBus {
     };
   }
 
+  public once(eventName: string, callback: object): void {
+    this.on(eventName, callback, true);
+  }
+
   // Remove listener with him subscribers
   public off(eventName: string) {
     delete this.events[eventName];
+
+    if (this.onceEventNames[eventName]) {
+	    delete this.onceEventNames[eventName];
+    }
   }
 }

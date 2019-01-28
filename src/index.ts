@@ -1,5 +1,3 @@
-// import '@babel/polyfill';
-
 // Base classes
 import { RpcClient } from './rpcClient';
 import { SocketClient } from './socketClient';
@@ -9,6 +7,7 @@ import { IBlock } from './interfaces/block';
 import { ITx } from './interfaces/tx';
 import { BlockModel } from './models/block';
 import { TxModel } from './models/tx';
+import EventBus from './utils/eventBus';
 
 export interface IGlobalOptions {
   node_rpc: string;
@@ -23,10 +22,13 @@ export interface IGlobalOptions {
  */
 export default class TendermintJs {
 
-  // Static factory methods
+  // Static classes and methods
   public static createBlockModel = (rawBlock: IBlock): BlockModel => new BlockModel(rawBlock);
   public static createTxModel = (rawTx: ITx): TxModel => new TxModel(rawTx);
-  public socket: SocketClient;
+	public static eventBus = () => new EventBus();
+
+	// Instances
+	public socket: SocketClient;
   public rpc: RpcClient;
 
   // Global options
