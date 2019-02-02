@@ -24,7 +24,10 @@
   },
   "homepage": "https://github.com/cryptoji/Tendermint.js#readme",
   "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "axios": "^0.18.0",
     "buffer": "^5.2.1",
+    "es6-promise": "^4.2.5",
     "msgpack-lite": "^0.1.26",
     "ws": "^6.1.2"
   },
