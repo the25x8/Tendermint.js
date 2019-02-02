@@ -1,9 +1,28 @@
+// const TendermintJS = require('../lib/tendermint.js');
 import TendermintJS from '../lib/tendermint.js';
 
 // Init Tendermint-Client instance
 const tm = new TendermintJS({
 	node_rpc: 'http://localhost:26657',
-	node_ws: 'ws://localhost:26657'
+	node_ws: 'ws://localhost:26657',
+	logs: false
+});
+
+describe('RpcClient endpoints without queriesParams', () => {
+	it('Abci Info', async() => {
+		try {
+			const data = await tm.rpc.abciInfo();
+      expect(data).toBeTruthy();
+		} catch (e) {
+      fail("Abci Info catch");
+    }
+	});
+
+
+});
+
+describe('RpcClient endpoints with queriesParams', () => {
+
 });
 
 /*
