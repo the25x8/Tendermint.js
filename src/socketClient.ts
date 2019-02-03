@@ -44,7 +44,7 @@ export class SocketClient {
 			 */
 
       // Socket events/messages handler
-       const messageHandler = (event: any) => {
+      const messageHandler = (event: any) => {
 
         // Differences formats of ws class for node and browser
         const parsedEvent = this.isNode ? JSON.parse(event) : JSON.parse(event.data);
@@ -73,7 +73,7 @@ export class SocketClient {
       };
 
       // when socket opened
-       const openHandler = () => {
+      const openHandler = () => {
         this.isSynced = true;
 
         if (this.options.logs) {
@@ -87,7 +87,7 @@ export class SocketClient {
       };
 
       // when socket closed
-       const closeHandler = (error) => {
+      const closeHandler = (error) => {
         this.connection = null;
         this.isSynced = false;
 
@@ -95,7 +95,7 @@ export class SocketClient {
         reject();
       };
 
-       const errorHandler = (error) => {
+      const errorHandler = (error) => {
         console.error('TendermintWebSocket/Errors: Socket error:', error);
         reject();
       };
@@ -104,7 +104,7 @@ export class SocketClient {
 			 * Use different realisations to call
 			 * of WebSockets for browser and node
 			 */
-       try {
+      try {
         const wsUrl = `${this.options.node_ws}/websocket`;
 
         // for node

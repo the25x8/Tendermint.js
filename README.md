@@ -1,5 +1,5 @@
 # Tendermint.js
-The simple and minimalistic javascript lib to get Tendermint blockchain data from node rpc and websocket
+The simple and minimalistic javascript library to get Tendermint blockchain data from node RPC and WebSocket.
 
 ---
 

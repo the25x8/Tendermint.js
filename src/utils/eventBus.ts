@@ -11,7 +11,7 @@ export interface IEventBus {
   events: {};
   emit(eventName: string, payload: any): void;
   on(eventName: string, callback: object, once?: boolean): { off: object };
-	once(eventName: string, callback: object): void;
+  once(eventName: string, callback: object): void;
   off(eventName: string): void;
 }
 
@@ -33,8 +33,8 @@ export default class EventBus implements IEventBus {
       this.events[eventName][id](payload),
     );
 
-    if(this.onceEventNames[eventName]) {
-	    this.off(eventName);
+    if (this.onceEventNames[eventName]) {
+      this.off(eventName);
     }
   }
 
@@ -73,7 +73,7 @@ export default class EventBus implements IEventBus {
     delete this.events[eventName];
 
     if (this.onceEventNames[eventName]) {
-	    delete this.onceEventNames[eventName];
+      delete this.onceEventNames[eventName];
     }
   }
 }

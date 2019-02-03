@@ -25,10 +25,10 @@ export default class TendermintJs {
   // Static classes and methods
   public static createBlockModel = (rawBlock: IBlock): BlockModel => new BlockModel(rawBlock);
   public static createTxModel = (rawTx: ITx): TxModel => new TxModel(rawTx);
-	public static eventBus = () => new EventBus();
+  public static eventBus = () => new EventBus();
 
-	// Instances
-	public socket: SocketClient;
+  // Instances
+  public socket: SocketClient;
   public rpc: RpcClient;
 
   // Global options
