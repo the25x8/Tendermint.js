@@ -1,4 +1,7 @@
 // tslint:disable-next-line:export-just-namespace
+import {IGlobalOptions} from "./src";
+import {IAbciInfo, IConsensusState} from "./src/rpcClient";
+
 export = TendermintJS;
 export as namespace TendermintJS;
 
@@ -159,8 +162,34 @@ declare namespace TendermintJS {
 		);
 	}
 
+	interface IAbciInfo {
+		data: any;
+		version: string;
+		app_version: string;
+	}
+
+	interface IVoteSet {
+		round: string;
+		prevotes: string[];
+		prevotes_bit_array: string;
+		precommits: string[];
+		precommits_bit_array: string;
+	}
+
+	interface IConsensusState {
+		'height/round/step': string;
+		start_time: string;
+		proposal_block_hash: string;
+		locked_block_hash: string;
+		valid_block_hash: string;
+		height_vote_set: IVoteSet[];
+	}
+
 	class RpcClient {
-		constructor();
+		constructor(options: IGlobalOptions);
+
+		async abciInfo(): IAbciInfo;
+		async consensusState(): IConsensusState;
 	}
 
 	class BlockModel implements IBlock {
