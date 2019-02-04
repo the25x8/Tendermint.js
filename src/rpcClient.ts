@@ -19,15 +19,26 @@ import { IGlobalOptions } from './index';
 // }
 
 export interface IAbciInfo {
-  jsonrpc: string;
-  id: string;
-  result: {
-    response: {
-      data: any;
-      version: string;
-      app_version: string;
-    },
-  };
+	data: any;
+	version: string;
+	app_version: string;
+}
+
+interface IVoteSet {
+	round: string;
+	prevotes: string[];
+	prevotes_bit_array: string;
+	precommits: string[];
+	precommits_bit_array: string;
+}
+
+export interface IConsensusState {
+	'height/round/step': string;
+	start_time: string;
+	proposal_block_hash: string;
+	locked_block_hash: string;
+	valid_block_hash: string;
+	height_vote_set: IVoteSet[];
 }
 
 export class RpcClient {
@@ -39,28 +50,43 @@ export class RpcClient {
 
   public async abciInfo(): IAbciInfo {
     try {
-      const response: AxiosResponse = await axios.get(`${this.options.node_rpc}/abci_info`);
+      const res: AxiosResponse =
+        await axios.get(`${this.options.node_rpc}/abci_info`);
 
-      if (response.status === 200) {
-        return response.data;
+      if (res.status === 200) {
+	      return res.data.result.response;
       }
     } catch (error) {
       this.logError(error);
     }
   }
 
+  public async consensusState(): IConsensusState {
+    try {
+      const res: AxiosResponse =
+        await axios.get(`${this.options.node_rpc}/consensus_state`);
+
+      if (res.status === 200) {
+	      return res.data.result.round_state;
+      }
+    } catch (error) {
+	    this.logError(error);
+    }
+  }
+
+  // Print error info
   private logError(error: AxiosError) {
     if (this.options.logs) {
       if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
+        console.log('Data:\n', error.response.data);
+        console.log('Status:\n', error.response.status);
+        console.log('Headers:\n', error.response.headers);
       } else if (error.request) {
-        console.log(error.request);
+        console.log('Request:\n', error.request);
       } else {
-        console.log('Error', error.message);
+        console.log('Error:\n', error.message);
       }
-      console.log(error.config);
+      console.log('Config:\n', error.config);
     }
   }
 }
