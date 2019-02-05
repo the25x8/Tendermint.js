@@ -1,4 +1,4 @@
-const WS = require('ws');
+const NodeWebSocket = require('ws');
 
 import { IGlobalOptions } from './index';
 import { BlockModel } from './models/block';
@@ -109,7 +109,7 @@ export class SocketClient {
 
         // for node
         if (this.isNode) {
-          this.connection = new WS(wsUrl);
+          this.connection = new NodeWebSocket(wsUrl);
           this.connection.on('open', () => openHandler());
           this.connection.on('close', (error) => closeHandler(error));
           this.connection.on('error', (error) => errorHandler(error));
