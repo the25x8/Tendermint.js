@@ -8,37 +8,31 @@ import { IGlobalOptions } from './index';
 // import { BlockModel } from './models/block';
 // import { TxModel } from './models/tx';
 
-/*
- * TM RPC class and interfaces
- */
-// export interface ISearchByQuery {
-//   perPage: number;
-//   page: number;
-//   prove: boolean;
-//   query: string;
-// }
-
 export interface IAbciInfo {
-	data: any;
-	version: string;
-	app_version: string;
+  response: {
+    data: any;
+    version: string;
+    app_version: string;
+  };
 }
 
 interface IVoteSet {
-	round: string;
-	prevotes: string[];
-	prevotes_bit_array: string;
-	precommits: string[];
-	precommits_bit_array: string;
+  round: string;
+  prevotes: string[];
+  prevotes_bit_array: string;
+  precommits: string[];
+  precommits_bit_array: string;
 }
 
 export interface IConsensusState {
-	'height/round/step': string;
-	start_time: string;
-	proposal_block_hash: string;
-	locked_block_hash: string;
-	valid_block_hash: string;
-	height_vote_set: IVoteSet[];
+  round_state: {
+    'height/round/step': string;
+    start_time: string;
+    proposal_block_hash: string;
+    locked_block_hash: string;
+    valid_block_hash: string;
+    height_vote_set: IVoteSet[];
+  };
 }
 
 export class RpcClient {
@@ -48,32 +42,32 @@ export class RpcClient {
     this.options = options;
   }
 
+  // ----------------------
+  // Wrappers of RPC methods
   public async abciInfo(): IAbciInfo {
+    return await this.get('abci_info');
+  }
+
+  public async consensusState(): IConsensusState {
+    return await this.get('consensus_state');
+  }
+
+  // ----------------------
+  // Universal get wrapper
+  public async get(method: string): object {
     try {
       const res: AxiosResponse =
-        await axios.get(`${this.options.node_rpc}/abci_info`);
+        await axios.get(`${this.options.node_rpc}/${method}`);
 
       if (res.status === 200) {
-	      return res.data.result.response;
+        return res.data.result;
       }
     } catch (error) {
       this.logError(error);
     }
   }
 
-  public async consensusState(): IConsensusState {
-    try {
-      const res: AxiosResponse =
-        await axios.get(`${this.options.node_rpc}/consensus_state`);
-
-      if (res.status === 200) {
-	      return res.data.result.round_state;
-      }
-    } catch (error) {
-	    this.logError(error);
-    }
-  }
-
+  // -------------------------
   // Print error info
   private logError(error: AxiosError) {
     if (this.options.logs) {
