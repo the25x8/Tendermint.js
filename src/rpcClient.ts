@@ -1,5 +1,5 @@
 // Polyfills
-import IValidator, { IValidatorVote, IValidators } from './interfaces/validator';
+import IValidator, { IValidators, IValidatorVote } from './interfaces/validator';
 
 require('es6-promise').polyfill();
 require('@babel/polyfill');
@@ -11,45 +11,45 @@ import { IGlobalOptions } from './index';
 // import { TxModel } from './models/tx';
 
 export interface IAbciInfo {
-	data: any;
-	version: string;
-	app_version: string;
+  data: any;
+  version: string;
+  app_version: string;
 }
 
 export interface IConsensusState {
-	'height/round/step': string;
-	start_time: string;
-	proposal_block_hash: string;
-	locked_block_hash: string;
-	valid_block_hash: string;
-	height_vote_set: IValidatorVote[];
+  'height/round/step': string;
+  start_time: string;
+  proposal_block_hash: string;
+  locked_block_hash: string;
+  valid_block_hash: string;
+  height_vote_set: IValidatorVote[];
 }
 
 export interface IDumpConsensusState {
-	height: string;
-	round: string;
-	step: number;
-	start_time: string;
-	commit_time: string;
-	validators: IValidators;
-	proposal: any;
-	proposal_block: any;
-	proposal_block_parts: any;
-	locked_round: string;
-	locked_block: any;
-	locked_block_parts: any;
-	valid_round: string;
-	valid_block: any;
-	valid_block_parts: any;
-	votes: IValidatorVote[];
-	commit_round: string;
-	last_commit: {
-		votes: string[];
-		votes_bit_array: string;
-		peer_maj_23s: any;
-	};
-	last_validators: IValidators;
-	peers: string[];
+  height: string;
+  round: string;
+  step: number;
+  start_time: string;
+  commit_time: string;
+  validators: IValidators;
+  proposal: any;
+  proposal_block: any;
+  proposal_block_parts: any;
+  locked_round: string;
+  locked_block: any;
+  locked_block_parts: any;
+  valid_round: string;
+  valid_block: any;
+  valid_block_parts: any;
+  votes: IValidatorVote[];
+  commit_round: string;
+  last_commit: {
+    votes: string[];
+    votes_bit_array: string;
+    peer_maj_23s: any;
+  };
+  last_validators: IValidators;
+  peers: string[];
 }
 
 // end of interfaces
@@ -66,15 +66,15 @@ export class RpcClient {
   // ----------------------
   // Wrappers of RPC methods
   public async abciInfo(): IAbciInfo {
-    return await this.get('abci_info')['response'];
+    return await this.get('abci_info').response;
   }
 
   public async consensusState(): IConsensusState {
-    return await this.get('consensus_state')['round_state'];
+    return await this.get('consensus_state').round_state;
   }
 
   public async dumpConsensusState(): IDumpConsensusState {
-	  return await this.get('dump_consensus_state')['round_state'];
+    return await this.get('dump_consensus_state').round_state;
   }
 
   // ----------------------
