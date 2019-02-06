@@ -26,6 +26,15 @@ describe('RpcClient endpoints without queriesParams', () => {
       fail(e);
     }
   });
+
+  it('Dump consensus state', async() => {
+    try {
+      const data = await tm.rpc.dumpConsensusState();
+      expect(data).toBeTruthy();
+    } catch (e) {
+      fail(e);
+    }
+  });
 });
 
 describe('RpcClient endpoints with queriesParams', () => {

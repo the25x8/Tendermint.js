@@ -1,6 +1,4 @@
 // tslint:disable-next-line:export-just-namespace
-import {IGlobalOptions} from "./src";
-import {IAbciInfo, IConsensusState} from "./src/rpcClient";
 
 export = TendermintJS;
 export as namespace TendermintJS;
@@ -14,6 +12,30 @@ declare namespace TendermintJS {
 		public once(eventName: string, callback: object): void;
 		public off(eventName: string): void;
 	}
+
+	export interface IValidatorVote {
+		round: string;
+		prevotes: string[];
+		prevotes_bit_array: string;
+		precommits: string[];
+		precommits_bit_array: string;
+	}
+
+	export interface IValidators {
+		proposer: IValidator;
+		validators: IValidator[];
+	}
+
+	export default interface IValidator {
+		voting_power: string;
+		address: string;
+		accum?: string;
+		pub_key: {
+			type: string;
+			value: string;
+		};
+	}
+
 
 	interface IBlockID {
 		hash: string;
@@ -102,15 +124,6 @@ declare namespace TendermintJS {
 		}
 	}
 
-	interface IStatusValidatorInfo {
-		voting_power: string;
-		address: string;
-		pub_key: {
-			type: string;
-			value: string;
-		};
-	}
-
 	interface IStatusSyncInfo {
 		latest_block_hash: string;
 		latest_app_hash: string;
@@ -140,7 +153,7 @@ declare namespace TendermintJS {
 	interface IStatus {
 		node_info: IStatusNodeInfo;
 		sync_info: IStatusSyncInfo;
-		validator_info: IStatusValidatorInfo;
+		validator_info: IValidator;
 	}
 
 	interface IGlobalOptions {
@@ -185,11 +198,54 @@ declare namespace TendermintJS {
 		height_vote_set: IVoteSet[];
 	}
 
+	export interface IAbciInfo {
+		data: any;
+		version: string;
+		app_version: string;
+	}
+
+	export interface IConsensusState {
+		'height/round/step': string;
+		start_time: string;
+		proposal_block_hash: string;
+		locked_block_hash: string;
+		valid_block_hash: string;
+		height_vote_set: IValidatorVote[];
+	}
+
+	export interface IDumpConsensusState {
+		height: string;
+		round: string;
+		step: number;
+		start_time: string;
+		commit_time: string;
+		validators: IValidators;
+		proposal: any;
+		proposal_block: any;
+		proposal_block_parts: any;
+		locked_round: string;
+		locked_block: any;
+		locked_block_parts: any;
+		valid_round: string;
+		valid_block: any;
+		valid_block_parts: any;
+		votes: IValidatorVote[];
+		commit_round: string;
+		last_commit: {
+			votes: string[];
+			votes_bit_array: string;
+			peer_maj_23s: any;
+		};
+		last_validators: IValidators;
+		peers: string[];
+	}
+
 	class RpcClient {
 		constructor(options: IGlobalOptions);
 
 		async abciInfo(): IAbciInfo;
 		async consensusState(): IConsensusState;
+		async dumpConsensusState(): IDumpConsensusState;
 	}
 
 	class BlockModel implements IBlock {

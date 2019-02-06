@@ -1,15 +1,8 @@
+import IValidator from './validator';
+
 /*
  * Status interfaces
  */
-export interface IStatusValidatorInfo {
-  voting_power: string;
-  address: string;
-  pub_key: {
-    type: string;
-    value: string;
-  };
-}
-
 export interface IStatusSyncInfo {
   latest_block_hash: string;
   latest_app_hash: string;
@@ -40,5 +33,5 @@ export interface IStatusNodeInfo {
 export interface IStatus {
   node_info: IStatusNodeInfo;
   sync_info: IStatusSyncInfo;
-  validator_info: IStatusValidatorInfo;
+  validator_info: IValidator;
 }
