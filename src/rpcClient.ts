@@ -66,15 +66,18 @@ export class RpcClient {
   // ----------------------
   // Wrappers of RPC methods
   public async abciInfo(): IAbciInfo {
-    return await this.get('abci_info').response;
+    const { response } = await this.get('abci_info');
+    return response;
   }
 
   public async consensusState(): IConsensusState {
-    return await this.get('consensus_state').round_state;
+    const { round_state } = await this.get('consensus_state');
+    return round_state;
   }
 
   public async dumpConsensusState(): IDumpConsensusState {
-    return await this.get('dump_consensus_state').round_state;
+    const { round_state } = await this.get('dump_consensus_state');
+    return round_state;
   }
 
   // ----------------------
