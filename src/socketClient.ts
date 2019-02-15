@@ -31,6 +31,8 @@ export class SocketClient {
 	 * emit data through observable pattern
 	 */
   public connect(eventsTypes: string[] = []): Promise {
+	  const wsUrl = `${this.options.node_ws}/websocket`;
+
     return new Promise((resolve, reject) => {
       if (!this.options.node_ws) {
         console.error('You need set node_ws property in connect method arguments');
@@ -105,21 +107,19 @@ export class SocketClient {
 			 * of WebSockets for browser and node
 			 */
       try {
-        const wsUrl = `${this.options.node_ws}/websocket`;
-
         // for node
         if (this.isNode) {
           this.connection = new NodeWebSocket(wsUrl);
-          this.connection.on('open', () => openHandler());
-          this.connection.on('close', (error) => closeHandler(error));
-          this.connection.on('error', (error) => errorHandler(error));
-          this.connection.on('message', (event) => messageHandler(event));
+          this.connection.on('open', openHandler);
+          this.connection.on('close', closeHandler);
+          this.connection.on('error', errorHandler);
+          this.connection.on('message', messageHandler);
         } else {
           this.connection = new WebSocket(wsUrl);
-          this.connection.onopen = () => openHandler();
-          this.connection.onclose = (error) => closeHandler(error);
-          this.connection.onerror = (error) => errorHandler(error);
-          this.connection.onmessage = (event) => messageHandler(event);
+          this.connection.onopen = openHandler;
+          this.connection.onclose = closeHandler;
+          this.connection.onerror = errorHandler;
+          this.connection.onmessage = messageHandler;
         }
 
       } catch (e) {
@@ -136,26 +136,26 @@ export class SocketClient {
     method: 'subscribe'|'unsubscribe',
     type: string,
   ): void {
+	  let methodParams: {
+		  id: string;
+		  query: string;
+	  };
+
+	  if (type === 'blocks') {
+		  methodParams = {
+			  id:  `${method}-out-blocks`,
+			  query: 'tm.event=\'NewBlock\'',
+		  };
+	  } else if (type === 'txs') {
+		  methodParams = {
+			  id:  `${method}-out-txs`,
+			  query: 'tm.event=\'Tx\'',
+		  };
+	  } else {
+		  return;
+	  }
+
     try {
-      let methodParams: {
-        id: string;
-        query: string;
-      };
-
-      if (type === 'blocks') {
-        methodParams = {
-          id:  `${method}-out-blocks`,
-          query: 'tm.event=\'NewBlock\'',
-        };
-      } else if (type === 'txs') {
-        methodParams = {
-          id:  `${method}-out-txs`,
-          query: 'tm.event=\'Tx\'',
-        };
-      } else {
-        return;
-      }
-
       this.connection.send(JSON.stringify({
         id: methodParams.id,
         jsonrpc: '2.0',
