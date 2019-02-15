@@ -31,10 +31,10 @@ export class SocketClient {
 	 * emit data through observable pattern
 	 */
   public connect(options: { subscribe: string[] }): Promise {
-	  const wsUrl = `${this.options.node_ws}/websocket`;
-	  const subscribeTo: string[] = options.subscribe || [];
+    const wsUrl = `${this.options.node_ws}/websocket`;
+    const subscribeTo: string[] = options.subscribe || [];
 
-    return new Promise((resolve, reject) => {
+   return new Promise((resolve, reject) => {
       if (!this.options.node_ws) {
         console.error('You need set node_ws property in connect method arguments');
         reject();
@@ -84,7 +84,7 @@ export class SocketClient {
         }
 
         // Subscribe to initial events
-	      subscribeTo.forEach((eventType) => this.action('subscribe', eventType));
+         subscribeTo.forEach((eventType) => this.action('subscribe', eventType));
 
         resolve();
       };
@@ -137,26 +137,26 @@ export class SocketClient {
     method: 'subscribe'|'unsubscribe',
     type: string,
   ): void {
-	  let methodParams: {
-		  id: string;
-		  query: string;
-	  };
+    let methodParams: {
+      id: string;
+      query: string;
+    };
 
-	  if (type === 'blocks') {
-		  methodParams = {
-			  id:  `${method}-out-blocks`,
-			  query: 'tm.event=\'NewBlock\'',
-		  };
-	  } else if (type === 'txs') {
-		  methodParams = {
-			  id:  `${method}-out-txs`,
-			  query: 'tm.event=\'Tx\'',
-		  };
-	  } else {
-		  return;
-	  }
+    if (type === 'blocks') {
+      methodParams = {
+        id:  `${method}-out-blocks`,
+        query: 'tm.event=\'NewBlock\'',
+      };
+    } else if (type === 'txs') {
+      methodParams = {
+        id:  `${method}-out-txs`,
+        query: 'tm.event=\'Tx\'',
+      };
+    } else {
+      return;
+    }
 
-    try {
+   try {
       this.connection.send(JSON.stringify({
         id: methodParams.id,
         jsonrpc: '2.0',
