@@ -30,8 +30,9 @@ export class SocketClient {
 	 * subscribe to NewBlocks, NewTxs(optional)
 	 * emit data through observable pattern
 	 */
-  public connect(eventsTypes: string[] = []): Promise {
+  public connect(options: { subscribe: string[] }): Promise {
 	  const wsUrl = `${this.options.node_ws}/websocket`;
+	  const subscribeTo: string[] = options.subscribe || [];
 
     return new Promise((resolve, reject) => {
       if (!this.options.node_ws) {
@@ -83,7 +84,7 @@ export class SocketClient {
         }
 
         // Subscribe to initial events
-        eventsTypes.forEach((eventType) => this.action('subscribe', eventType));
+	      subscribeTo.forEach((eventType) => this.action('subscribe', eventType));
 
         resolve();
       };

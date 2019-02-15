@@ -9,13 +9,13 @@ const options = {
 const tmJs = new TendermintJS(options);
 
 // Connect to websocket
-tmJs.socket.connect(['blocks', 'txs'])
+tmJs.socket.connect({ subscribe: ['blocks', 'txs'] })
   .then(() => {
     console.info('Tendermint.connect: Connected to node websocket');
 
     // Alt subscribe way
-    // tmJs.socket.eventAction('subscribe', 'blocks');
-    // tmJs.socket.eventAction('subscribe', 'txs');
+    // tmJs.socket.action('subscribe', 'blocks');
+    // tmJs.socket.action('subscribe', 'txs');
 
     // Unsubscribe out events tests
     setTimeout(() => {
@@ -25,14 +25,15 @@ tmJs.socket.connect(['blocks', 'txs'])
   })
   .catch(() => console.error('Tendermint.connect: Websocket connection error'));
 
-// Subscribe to events
-tmJs.socket.$events.on('block', (payload) => {
-  console.log(payload);
+// Subscribe to block chain events
+tmJs.socket.$events.on('block', (block) => {
+  console.log(block);
 });
 
-tmJs.socket.$events.on('tx', (payload) => {
-  console.log(payload);
+tmJs.socket.$events.on('tx', (tx) => {
+  console.log(tx);
 });
 
+// Remove event listeners
 tmJs.socket.$events.off('tx');
 // or listenerRef.off();

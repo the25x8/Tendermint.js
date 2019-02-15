@@ -168,7 +168,7 @@ declare namespace TendermintJS {
 
 		constructor(options: IGlobalOptions);
 
-		connect(eventsTypes: string[] = []): Promise;
+		connect(options: { subscribe: string[] }): Promise;
 		action(
 			method: 'subscribe'|'unsubscribe',
 			type: 'blocks'|'txs'
