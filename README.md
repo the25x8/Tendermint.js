@@ -1,3 +1,5 @@
+> This repository is frozed. I'm sorry that I can't finished this yet, but you can use it as utility model for your projects.
+
 # Tendermint.js
 The simple and minimalistic library to get blockchain data from Tendermint node.
 
